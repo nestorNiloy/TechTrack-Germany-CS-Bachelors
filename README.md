@@ -1,9 +1,26 @@
-# Germany CS Bachelor Map
+# 🗺️ Germany CS Bachelor Map
 
-Interactive map comparing CS bachelor programs in Germany — both
-**dual-study** (Ausbildung + degree) and **full-time** — with tuition,
-job-market tier, and nearest-big-city travel times to help with
-program shortlisting.
+An interactive, zero-overhead geospatial exploration tool built to map, filter, and compare Computer Science bachelor programs across Germany. Designed to help prospective students navigate and shortlist dual-study and full-time tracks based on tuition structures, language requirements, and real-world regional transit times.
+
+👉 **[Live Interactive Map]** (https://nestorniloy.github.io/TechTrack-Germany-CS-Bachelors/)
+
+---
+
+## ⚡ Key Features
+
+*   **Dual-Perspective Mapping:** Toggle seamlessly between **Dual-Study** (Ausbildung + degree) and **Full-Time** tracks with localized color coding.
+*   **Transit-Proximity Matrix:** Features a built-in travel metric calculating rough train durations from regional campuses straight to major city Central Stations (`Hauptbahnhof`).
+*   **Zero-Overhead Architecture:** No framework, no build steps, and no backend overhead. Pure web-standard stack that boots instantly.
+*   **Live Dashboard Metrics:** Implements an animated, split-flap style scoreboard displaying real-time filtered totals for matched programs, dual-study availability, and tuition-free options.
+*   **Client-Side Persistence:** Integrated watchlist management utilizing the `HTML5 LocalStorage API` to preserve your shortlisted programs across sessions without a database.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+
+*   **Frontend UI:** Vanilla HTML5, CSS3 (Custom properties, CSS Grid, Flexbox, Keyframe animations).
+*   **Geospatial Rendering:** Leaflet.js mapped over lightweight, high-performance CartoDB Dark Matter tile assets.
+*   **State Management:** Lightweight unified state-controller pattern written in pure vanilla JavaScript.
 
 No backend, no build step. Pure HTML/CSS/JS + Leaflet.js. Deploys free
 on GitHub Pages.
@@ -17,28 +34,29 @@ on GitHub Pages.
 | `app.js`    | Map rendering, filters, list sync, popups, watchlist |
 | `style.css` | Departure-board visual design                        |
 
-## Adding real programs
+---
 
-Edit `data.js`. Each entry:
+## 📊 Extensible Data Schema
 
-```js
+The dataset lives entirely in `data.js` under a highly structural JSON schema. Each university profile encapsulates 14 data vectors:
+
+```javascript
 {
-  id: "unique-slug",
-  university: "Name",
-  program: "Official program title (B.Sc.)",
-  city: "City",
-  lat: 00.0000, lng: 00.0000,       // decimal degrees
-  type: "dual" | "fulltime",
-  company: "Partner company" | null,
-  tuitionFree: true | false,
-  tuitionPerSem: 000 | null,         // EUR, null if free
-  language: "German" | "English" | "German/English",
-  reputation: "top" | "good" | "reasonable",
-  jobMarket: "high" | "medium" | "low",
-  website: "https://...",            // course page link, used in popup
-  nearestCities: [
-    { name: "City", distanceKm: 00, travelMinHbf: 00 }
-    // 2–3 entries, ordered nearest first
+  id: "th-rosenheim-aai",
+  university: "TH Rosenheim",
+  program: "Applied Artificial Intelligence (B.Sc.)",
+  city: "Rosenheim",
+  lat: 47.8561, lng: 12.1281,       // Coordinates for precise mapping
+  type: "dual",                     // "dual" | "fulltime"
+  company: "Practical placement",   // Associated partner company if applicable
+  tuitionFree: true,
+  tuitionPerSem: null,              // Cost in EUR per semester
+  language: "English",
+  reputation: "good",
+  jobMarket: "high",
+  website: "https://...",            // Link directly to official course syllabus
+  nearestCities: [                  // Ordered by closest proximity
+    { name: "Munich", distanceKm: 55, travelMinHbf: 45 }
   ]
 }
 ```
@@ -57,9 +75,11 @@ objects currently in `data.js` once you have verified data.
 
 ## Running locally
 
-Just open `index.html` in a browser — no server needed. (If your
-browser blocks local `file://` script loading, run any static server,
-e.g. `npx serve .` from this folder.)
+Because this project utilizes ES modules and external map assets cleanly, you can run it instantly without a local compilation server:
+
+- Clone the repository.
+- Open index.html directly in any web browser.
+(Note: If your local browser configurations restrict file:// execution protocols, spin up a quick static wrapper via npx serve .)
 
 ## Deploying to GitHub Pages
 
@@ -70,11 +90,12 @@ e.g. `npx serve .` from this folder.)
 4. Site goes live at `https://yourname.github.io/` (or
    `https://yourname.github.io/repo-name/`).
 
-## Roadmap ideas (good "future work" talking points)
+## Scopes for future improvements
 
-- Auto-generate `nearestCities` travel times via a transit API instead
-  of manual lookup.
-- Scrape/parse a structured source (e.g. Hochschulkompass) to grow the
-  dataset beyond manual entry.
-- Add a comparison view for watchlisted programs side-by-side.
-- Add NC (Numerus Clausus) history per program where available.
+- Automated Transit Verification: Replace manual route estimations by querying live Deutsche Bahn schedule structures via an open-source transit API.
+
+- Program Scraper Integration: Build a structural parser script targeting centralized indices (like Hochschulkompass) to scale the database dynamically beyond 100+ programs.
+
+- Side-by-Side Comparison Grid: Implement an expandable matrix layout overlay allowing users to compare selected watchlist items side-by-side across all variables.
+
+- Historical NC Analytics: Integrate a field track mapping past Numerus Clausus (admission grade cutoff) requirements per university.
